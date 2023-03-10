@@ -8,20 +8,26 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <form>
+    <div class="list">
+      
+    </div>
+    <form id="form">
+      <p class="error name"></p>
       <label for="name">Ваше имя:</label>
-      <input type="text" id="name" name="name" required />
+      <input type="text" id="name" name="name" />
 
+      <p class="error rating"></p>
       <label for="rating">Оценка (от 1 до 5):</label>
-      <input type="number" id="rating" name="rating" min="1" max="5" required />
-
+      <input type="number" id="rating" name="rating" min="1" max="5" />
+      <p class="error date"></p>
       <label for="date">Дата: </label>
-      <input type="date" id="date" name="date" required />
+      <input type="date" id="date" name="date" />
 
+      <p class="error comment"></p>
       <label for="comment">Отзыв:</label>
       <textarea id="comment" name="comment" rows="5" cols="40"></textarea>
 
-      <button type="submit">Отправить</button>
+      <button type="submit" id="formSubmit">Отправить</button>
     </form>
 
     <script src="app.js"></script>
