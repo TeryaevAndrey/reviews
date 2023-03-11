@@ -126,6 +126,20 @@ const addComment = (e) => {
           `Вчера, ${time.hours}:${time.minutes}`,
           resData.comment
         );
+      } else if (postDate.toDateString() === today.toDateString()) {
+        setHTML(
+          resData.name,
+          resData.rating,
+          `Сегодня, ${(time, hours)}:${time.minutes}`,
+          resData.comment
+        );
+      } else {
+        setHTML(
+          resData.name,
+          resData.rating,
+          `${postDate.toLocaleDateString()}-${time.hours}:${time.minutes}`,
+          resData.comment
+        );
       }
     }
   }
@@ -170,18 +184,11 @@ if (postsStorage.length > 0) {
     if (today.toDateString() === postDate.toDateString()) {
       resDate = `Сегодня, ${time.hours}:${time.minutes}`;
     } else if (postDate.toDateString() === yesterday.toDateString()) {
-      const postDate = new Date(post.date);
-
-      const hours = postDate.getHours();
-      const minutes = postDate.getMinutes();
-
-      const time = {
-        hours: hours.toString().length < 2 ? "0" + hours : hours,
-        minutes: minutes.toString().length < 2 ? "0" + minutes : minutes,
-      };
-
       resDate = `Вчера, ${time.hours}:${time.minutes}`;
     } else {
+      resDate = `${postDate.toLocaleDateString()}-${time.hours}:${
+        time.minutes
+      }`;
     }
 
     return setHTML(post.name, post.rating, resDate, post.comment);
