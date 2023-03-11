@@ -1,13 +1,19 @@
 const nameValue = document.getElementById("name");
 const ratingValue = document.getElementById("rating");
 const dateValue = document.getElementById("date");
+const timeValue = document.getElementById("time");
 const commentValue = document.getElementById("comment");
 const formSubmitBtn = document.getElementById("formSubmit");
 const list = document.querySelector(".list");
 
 const errName = document.querySelector(".error.name");
 const errRating = document.querySelector(".error.rating");
+const errTime = document.querySelector(".error.time");
 const errComment = document.querySelector(".error.comment");
+
+let postsStorage = JSON.parse(localStorage.getItem("posts")) || [];
+
+let posts = postsStorage;
 
 nameValue.addEventListener("input", (e) => {
   if (e.target.value.length > 0) {
@@ -18,6 +24,18 @@ nameValue.addEventListener("input", (e) => {
 ratingValue.addEventListener("input", (e) => {
   if (e.target.value.length > 0) {
     errRating.style.display = "none";
+  }
+});
+
+timeValue.addEventListener("input", (e) => {
+  if (e.target.value.length > 0) {
+    errTime.style.display = "none";
+  }
+});
+
+commentValue.addEventListener("input", (e) => {
+  if (e.target.value.length > 0) {
+    errComment.style.display = "none";
   }
 });
 
@@ -48,6 +66,13 @@ const addComment = (e) => {
     isError = true;
   }
 
+  if (timeValue.value === "" && dateValue.value.length > 0) {
+    errTime.style.display = "block";
+    errTime.textContent = "Введите время";
+
+    isError = true;
+  }
+
   if (commentValue.value.length === 0) {
     errComment.style.display = "block";
     errComment.textContent = "Вы ничего не написали";
@@ -56,9 +81,7 @@ const addComment = (e) => {
   }
 
   if (!isError) {
-    let date;
-
-    if (dateValue.value === "") {
+    if (dateValue.value.length === 0) {
       let date = new Date();
 
       const hours = date.getHours();
@@ -71,18 +94,52 @@ const addComment = (e) => {
         minutes: minutes.toString().length < 2 ? "0" + minutes : minutes,
       };
 
-      date = `Сегодня, ${time.hours}:${time.minutes}`;
-
       const resData = {
         name: nameValue.value,
         rating: ratingValue.value,
         date,
+        time: timeValue.value,
         comment: commentValue.value,
       };
 
-      console.log(resData);
+      posts.push(resData);
 
-      setHTML(resData.name, resData.rating, resData.date, resData.comment);
+      localStorage.setItem("posts", JSON.stringify(posts));
+
+      setHTML(
+        resData.name,
+        resData.rating,
+        resData.time.length === 0
+          ? `Сегодня, ${time.hours}:${time.minutes}`
+          : `Сегодня, ${resData.time}`,
+        resData.comment
+      );
+    } else {
+      let today = new Date();
+      let postDate = new Date(dateValue.value);
+      let yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const resData = {
+        name: nameValue.value,
+        rating: ratingValue.value,
+        date: postDate,
+        time: timeValue.value,
+        comment: commentValue.value,
+      };
+
+      posts.push(resData);
+
+      localStorage.setItem("posts", JSON.stringify(posts));
+
+      if (postDate.toDateString() === yesterday.toDateString()) {
+        setHTML(
+          resData.name,
+          resData.rating,
+          `Вчера, ${timeValue.value}`,
+          resData.comment
+        );
+      }
     }
   }
 };
@@ -106,5 +163,31 @@ const setHTML = (name, rating, date, comment) => {
 
   return list.insertAdjacentHTML("beforeend", html);
 };
+
+if (postsStorage.length > 0) {
+  postsStorage.map((post) => {
+    let today = new Date();
+    let postDate = new Date(post.date);
+    let yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    let resDate;
+
+    const hours = postDate.getHours();
+    const minutes = postDate.getMinutes();
+
+    const time = {
+      hours: hours.toString().length < 2 ? "0" + hours : hours,
+      minutes: minutes.toString().length < 2 ? "0" + minutes : minutes,
+    };
+
+    if (today.toDateString() === postDate.toDateString()) {
+      resDate = `Сегодня, ${time.hours}:${time.minutes}`;
+    } else if (postDate.toDateString() === yesterday.toDateString()) {
+      resDate = `Вчера, ${post.time}`;
+    }
+
+    return setHTML(post.name, post.rating, resDate, post.comment);
+  });
+}
 
 formSubmitBtn.addEventListener("click", addComment);
