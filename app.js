@@ -1,14 +1,12 @@
 const nameValue = document.getElementById("name");
 const ratingValue = document.getElementById("rating");
 const dateValue = document.getElementById("date");
-const timeValue = document.getElementById("time");
 const commentValue = document.getElementById("comment");
 const formSubmitBtn = document.getElementById("formSubmit");
 const list = document.querySelector(".list");
 
 const errName = document.querySelector(".error.name");
 const errRating = document.querySelector(".error.rating");
-const errTime = document.querySelector(".error.time");
 const errComment = document.querySelector(".error.comment");
 
 let postsStorage = JSON.parse(localStorage.getItem("posts")) || [];
@@ -24,12 +22,6 @@ nameValue.addEventListener("input", (e) => {
 ratingValue.addEventListener("input", (e) => {
   if (e.target.value.length > 0) {
     errRating.style.display = "none";
-  }
-});
-
-timeValue.addEventListener("input", (e) => {
-  if (e.target.value.length > 0) {
-    errTime.style.display = "none";
   }
 });
 
@@ -66,13 +58,6 @@ const addComment = (e) => {
     isError = true;
   }
 
-  if (timeValue.value === "" && dateValue.value.length > 0) {
-    errTime.style.display = "block";
-    errTime.textContent = "Введите время";
-
-    isError = true;
-  }
-
   if (commentValue.value.length === 0) {
     errComment.style.display = "block";
     errComment.textContent = "Вы ничего не написали";
@@ -87,8 +72,6 @@ const addComment = (e) => {
       const hours = date.getHours();
       const minutes = date.getMinutes();
 
-      console.log(hours.length);
-
       const time = {
         hours: hours.toString().length < 2 ? "0" + hours : hours,
         minutes: minutes.toString().length < 2 ? "0" + minutes : minutes,
@@ -98,7 +81,6 @@ const addComment = (e) => {
         name: nameValue.value,
         rating: ratingValue.value,
         date,
-        time: timeValue.value,
         comment: commentValue.value,
       };
 
@@ -109,9 +91,7 @@ const addComment = (e) => {
       setHTML(
         resData.name,
         resData.rating,
-        resData.time.length === 0
-          ? `Сегодня, ${time.hours}:${time.minutes}`
-          : `Сегодня, ${resData.time}`,
+        `Сегодня, ${time.hours}:${time.minutes}`,
         resData.comment
       );
     } else {
@@ -120,11 +100,18 @@ const addComment = (e) => {
       let yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
 
+      const hours = postDate.getHours();
+      const minutes = postDate.getMinutes();
+
+      const time = {
+        hours: hours.toString().length < 2 ? "0" + hours : hours,
+        minutes: minutes.toString().length < 2 ? "0" + minutes : minutes,
+      };
+
       const resData = {
         name: nameValue.value,
         rating: ratingValue.value,
         date: postDate,
-        time: timeValue.value,
         comment: commentValue.value,
       };
 
@@ -136,7 +123,7 @@ const addComment = (e) => {
         setHTML(
           resData.name,
           resData.rating,
-          `Вчера, ${timeValue.value}`,
+          `Вчера, ${time.hours}:${time.minutes}`,
           resData.comment
         );
       }
@@ -183,7 +170,18 @@ if (postsStorage.length > 0) {
     if (today.toDateString() === postDate.toDateString()) {
       resDate = `Сегодня, ${time.hours}:${time.minutes}`;
     } else if (postDate.toDateString() === yesterday.toDateString()) {
-      resDate = `Вчера, ${post.time}`;
+      const postDate = new Date(post.date);
+
+      const hours = postDate.getHours();
+      const minutes = postDate.getMinutes();
+
+      const time = {
+        hours: hours.toString().length < 2 ? "0" + hours : hours,
+        minutes: minutes.toString().length < 2 ? "0" + minutes : minutes,
+      };
+
+      resDate = `Вчера, ${time.hours}:${time.minutes}`;
+    } else {
     }
 
     return setHTML(post.name, post.rating, resDate, post.comment);
