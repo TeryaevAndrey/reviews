@@ -175,17 +175,18 @@ const deletePost = (id) => {
 };
 
 const likePost = (id) => {
-  let updatePosts = posts.map((post) => {
-    if (post.id === id) {
-      return { ...post, isLike: !post.isLike };
-    }
-  });
+  let postsStorage = JSON.parse(localStorage.getItem("posts")) || [];
+  let updateIndex = postsStorage.findIndex((post) => post.id === id);
 
-  localStorage.setItem("posts", JSON.stringify(updatePosts));
+  if (updateIndex !== -1) {
+    postsStorage[updateIndex].isLike = !postsStorage[updateIndex].isLike;
 
-  list.innerHTML = "";
+    localStorage.setItem("posts", JSON.stringify(postsStorage));
 
-  showPosts();
+    list.innerHTML = "";
+
+    showPosts();
+  }
 };
 
 const setHTML = (id, name, rating, date, comment, isLike) => {
