@@ -63,6 +63,7 @@ form {
     display: flex;
     align-items: start;
     justify-content: space-between;
+    position: relative;
   }
 
   .item__rating {
@@ -78,4 +79,17 @@ form {
   
   .item__text {
     margin-top: 0.5rem;
+  }
+
+  .item__btns {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+  }
+
+  .item__btn {
+    cursor: pointer;
   }
