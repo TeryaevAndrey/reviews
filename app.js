@@ -88,6 +88,7 @@ const addComment = (e) => {
         rating: ratingValue.value,
         date,
         comment: commentValue.value,
+        isLike: false,
       };
 
       posts.push(resData);
@@ -99,7 +100,8 @@ const addComment = (e) => {
         resData.name,
         resData.rating,
         `Сегодня, ${time.hours}:${time.minutes}`,
-        resData.comment
+        resData.comment,
+        resData.isLike
       );
     } else {
       let today = new Date();
@@ -121,6 +123,7 @@ const addComment = (e) => {
         rating: ratingValue.value,
         date: postDate,
         comment: commentValue.value,
+        isLike: false,
       };
 
       posts.push(resData);
@@ -133,7 +136,8 @@ const addComment = (e) => {
           resData.name,
           resData.rating,
           `Вчера, ${time.hours}:${time.minutes}`,
-          resData.comment
+          resData.comment,
+          resData.isLike
         );
       } else if (postDate.toDateString() === today.toDateString()) {
         setHTML(
@@ -141,7 +145,8 @@ const addComment = (e) => {
           resData.name,
           resData.rating,
           `Сегодня, ${(time, hours)}:${time.minutes}`,
-          resData.comment
+          resData.comment,
+          resData.isLike
         );
       } else {
         setHTML(
@@ -149,7 +154,8 @@ const addComment = (e) => {
           resData.name,
           resData.rating,
           `${postDate.toLocaleDateString()}-${time.hours}:${time.minutes}`,
-          resData.comment
+          resData.comment,
+          resData.isLike
         );
       }
     }
@@ -168,7 +174,21 @@ const deletePost = (id) => {
   showPosts();
 };
 
-const setHTML = (id, name, rating, date, comment) => {
+const likePost = (id) => {
+  let updatePosts = posts.map((post) => {
+    if (post.id === id) {
+      return { ...post, isLike: !post.isLike };
+    }
+  });
+
+  localStorage.setItem("posts", JSON.stringify(updatePosts));
+
+  list.innerHTML = "";
+
+  showPosts();
+};
+
+const setHTML = (id, name, rating, date, comment, isLike) => {
   let html = `
     <div class="item">
     <div>
@@ -195,9 +215,13 @@ const setHTML = (id, name, rating, date, comment) => {
       </svg>
     </div>
 
-    <svg class="item__btn like" width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 20C12 20 21 16 21 9.71405C21 6 18.9648 4 16.4543 4C15.2487 4 14.0925 4.49666 13.24 5.38071L12.7198 5.92016C12.3266 6.32798 11.6734 6.32798 11.2802 5.92016L10.76 5.38071C9.90749 4.49666 8.75128 4 7.54569 4C5 4 3 6 3 9.71405C3 16 12 20 12 20Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+    <div class="item__btn" onclick="likePost('${id}')">
+      <svg class="like" width="30px" height="30px" viewBox="0 0 24 24" fill="${
+        isLike ? "red" : "none"
+      }" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 20C12 20 21 16 21 9.71405C21 6 18.9648 4 16.4543 4C15.2487 4 14.0925 4.49666 13.24 5.38071L12.7198 5.92016C12.3266 6.32798 11.6734 6.32798 11.2802 5.92016L10.76 5.38071C9.90749 4.49666 8.75128 4 7.54569 4C5 4 3 6 3 9.71405C3 16 12 20 12 20Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
     </div>
   </div>
     `;
@@ -235,7 +259,14 @@ const showPosts = () => {
         }`;
       }
 
-      return setHTML(post.id, post.name, post.rating, resDate, post.comment);
+      return setHTML(
+        post.id,
+        post.name,
+        post.rating,
+        resDate,
+        post.comment,
+        post.isLike
+      );
     });
   }
 };
