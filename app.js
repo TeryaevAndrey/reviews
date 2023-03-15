@@ -234,8 +234,8 @@ const showPosts = () => {
   postsStorage = JSON.parse(localStorage.getItem("posts")) || [];
   posts = postsStorage;
 
-  if (postsStorage.length > 0) {
-    postsStorage.map((post) => {
+  if (posts.length > 0) {
+    posts.map((post) => {
       let today = new Date();
       let postDate = new Date(post.date);
       let yesterday = new Date(today);
