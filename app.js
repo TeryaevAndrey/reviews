@@ -1,6 +1,7 @@
 const nameValue = document.getElementById("name");
 const ratingValue = document.getElementById("rating");
 const dateValue = document.getElementById("date");
+const timeValue = document.getElementById("time");
 const commentValue = document.getElementById("comment");
 const form = document.getElementById("form");
 const list = document.querySelector(".list");
@@ -66,6 +67,8 @@ const addComment = (e) => {
   }
 
   if (!isError) {
+    console.log(dateValue.value);
+
     var id =
       "id" +
       new Date().toLocaleTimeString() +
@@ -106,9 +109,17 @@ const addComment = (e) => {
     } else {
       let today = new Date();
       let postDate = new Date(dateValue.value);
-      postDate.setHours(today.getHours(), today.getMinutes());
       let yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
+
+      if (timeValue.value.length > 0) {
+        postDate.setHours(
+          timeValue.value.split(":")[0],
+          timeValue.value.split(":")[1]
+        );
+      } else {
+        postDate.setHours(today.getHours(), today.getMinutes());
+      }
 
       const hours = postDate.getHours();
       const minutes = postDate.getMinutes();
