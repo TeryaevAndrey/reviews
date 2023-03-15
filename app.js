@@ -106,6 +106,7 @@ const addComment = (e) => {
     } else {
       let today = new Date();
       let postDate = new Date(dateValue.value);
+      postDate.setHours(today.getHours(), today.getMinutes());
       let yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
 
