@@ -2,7 +2,7 @@ const nameValue = document.getElementById("name");
 const ratingValue = document.getElementById("rating");
 const dateValue = document.getElementById("date");
 const commentValue = document.getElementById("comment");
-const formSubmitBtn = document.getElementById("formSubmit");
+const form = document.getElementById("form");
 const list = document.querySelector(".list");
 
 const errName = document.querySelector(".error.name");
@@ -274,4 +274,4 @@ const showPosts = () => {
 
 showPosts();
 
-formSubmitBtn.addEventListener("click", addComment);
+document.addEventListener("submit", addComment);
