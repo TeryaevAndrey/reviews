@@ -274,4 +274,9 @@ const showPosts = () => {
 
 showPosts();
 
-document.addEventListener("submit", addComment);
+form.addEventListener("submit", addComment);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addComment(e);
+  }
+});
